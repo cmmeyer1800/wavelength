@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION="0.1.1"
+VERSION="0.2.0"
 SCRIPT_URL="https://github.com/cmmeyer1800/wavelength/releases/download/v$VERSION/wl.sh"
 
 # Try curl first, if not available try wget
