@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Generate versioned install script
+        run: |
+          sed "s/^VERSION=.*/VERSION=\"${{ steps.version.outputs.VERSION }}\"/" install.sh > install.sh.release
+          mv install.sh.release install.sh
+
+      - name: Set version in wl.sh
+        run: |
+          sed "s/^VERSION=.*/VERSION=\"${{ steps.version.outputs.VERSION }}\"/" wl.sh > wl.sh.release
+          mv wl.sh.release wl.sh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            install.sh
+            wl.sh
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
