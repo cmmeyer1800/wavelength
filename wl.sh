@@ -26,6 +26,7 @@ Commands:
   delete              Delete an existing UV environment
   list                List existing UV environments
   version             Display the version of Wavelength
+  update              Check for and install updates
 "
 }
 
@@ -143,6 +144,71 @@ wl_set_base() {
 }
 
 
+###
+# Check for and install updates from GitHub releases
+wl_update() {
+    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+        echo "Error: curl or wget is required to check for updates. Please install one of these tools."
+        return 1
+    fi
+
+    REPO="cmmeyer1800/wavelength"
+    API_URL="https://api.github.com/repos/$REPO/releases/latest"
+
+    if command -v curl >/dev/null 2>&1; then
+        RELEASE_JSON=$(curl -fsSL "$API_URL" 2>/dev/null)
+    else
+        RELEASE_JSON=$(wget -qO- "$API_URL" 2>/dev/null)
+    fi
+
+    if [ -z "$RELEASE_JSON" ]; then
+        echo "Error: Could not fetch release information from GitHub."
+        return 1
+    fi
+
+    # Parse tag_name (e.g. "v0.2.0") - use sed for portability
+    TAG_NAME=$(echo "$RELEASE_JSON" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -n1)
+    if [ -z "$TAG_NAME" ]; then
+        echo "Error: Could not parse latest release version."
+        return 1
+    fi
+
+    LATEST_VERSION="${TAG_NAME#v}"
+    CURRENT_VERSION="$VERSION"
+
+    # Version comparison using sort -V (supported on macOS and Linux)
+    HIGHER=$(printf '%s\n' "$CURRENT_VERSION" "$LATEST_VERSION" | sort -V | tail -n1)
+    if [ "$HIGHER" = "$CURRENT_VERSION" ] && [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+        echo "Current version ($CURRENT_VERSION) is newer than latest release ($LATEST_VERSION). No update needed."
+        return 0
+    fi
+    if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
+        echo "Already up to date (v$CURRENT_VERSION)."
+        return 0
+    fi
+
+    DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG_NAME/wl.sh"
+    TMP_FILE=$(mktemp)
+
+    if command -v curl >/dev/null 2>&1; then
+        if ! curl -fsSL "$DOWNLOAD_URL" -o "$TMP_FILE"; then
+            echo "Error: Failed to download update."
+            rm -f "$TMP_FILE"
+            return 1
+        fi
+    else
+        if ! wget -q "$DOWNLOAD_URL" -O "$TMP_FILE"; then
+            echo "Error: Failed to download update."
+            rm -f "$TMP_FILE"
+            return 1
+        fi
+    fi
+
+    chmod +x "$TMP_FILE"
+    mv "$TMP_FILE" "$BASE_DIR/wl.sh"
+    echo "Successfully updated to v$LATEST_VERSION. Restart your shell or run 'source ~/.wavelength/wl.sh' to use the new version."
+}
+
 wl () {
     if [ $# -eq 0 ]; then
         wl_help
@@ -177,6 +243,9 @@ wl () {
             ;;
         init)
             wl_init
+            ;;
+        update)
+            wl_update
             ;;
         *)
             wl_help
