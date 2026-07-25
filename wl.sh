@@ -129,12 +129,13 @@ wl_set_base() {
     fi
 
     if [ ! -f "$CONFIG_FILE" ]; then
-        touch $CONFIG_FILE
+        touch "$CONFIG_FILE"
     fi
 
     # Check if base env config var exists, if so update it, if not add it
-    if grep -q "^WL_BASE_ENV=" "$CONFIG_FILE"; then
-        sed -i.bak "s|^WL_BASE_ENV=.*|WL_BASE_ENV=$ENV_NAME|" "$CONFIG_FILE"
+    if grep -q '^\(export \)\{0,1\}WL_BASE_ENV=' "$CONFIG_FILE"; then
+        sed -i.bak 's|^\(export \)\{0,1\}WL_BASE_ENV=.*|\1WL_BASE_ENV='"$ENV_NAME"'|' "$CONFIG_FILE"
+        rm -f "$CONFIG_FILE.bak"
         echo "Updated WL_BASE_ENV to $ENV_NAME in $CONFIG_FILE"
     else
         echo "export WL_BASE_ENV=$ENV_NAME" >> "$CONFIG_FILE"
