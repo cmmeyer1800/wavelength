@@ -6,10 +6,11 @@ if [ $# -ne 1 ]; then
 fi
 
 WL_SH_PATH="$1"
+INSTALL_DIR="${WL_BASE_DIR:-$HOME/.wavelength}"
 
-mkdir -p ~/.wavelength
-cp "$WL_SH_PATH" ~/.wavelength/wl.sh
+mkdir -p "$INSTALL_DIR"
+cp "$WL_SH_PATH" "$INSTALL_DIR/wl.sh"
 
 echo "Successfully installed wavelength
-Add the follwing to your bash/zc/etc .rc:
-    source ~/.wavelength/wl.sh"
+Add the following to your bash/zsh/etc .rc:
+    source \"$INSTALL_DIR/wl.sh\""

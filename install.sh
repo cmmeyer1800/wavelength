@@ -13,11 +13,13 @@ else
     exit 1
 fi
 
-mkdir -p ~/.wavelength
+INSTALL_DIR="${WL_BASE_DIR:-$HOME/.wavelength}"
+
+mkdir -p "$INSTALL_DIR"
 
 chmod +x wl.sh
-mv wl.sh ~/.wavelength/wl.sh
+mv wl.sh "$INSTALL_DIR/wl.sh"
 
 echo "Successfully installed wavelength
 Add the following to your bash/zsh/etc .rc:
-    source ~/.wavelength/wl.sh"
+    source \"$INSTALL_DIR/wl.sh\""
