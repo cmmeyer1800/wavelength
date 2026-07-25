@@ -18,7 +18,8 @@ wl_help () {
 Wavelength, the thin UV environment manager
 
 Commands:
-  activate            Activate the UV environment
+  activate            Activate a UV environment
+  base                Set a default environment for new shells
   init                Initialize wavelength environment management
   help                Display this help message
   create              Create a new UV environment
@@ -249,6 +250,7 @@ wl () {
             ;;
         *)
             wl_help
+            return 1
             ;;
     esac
 }
