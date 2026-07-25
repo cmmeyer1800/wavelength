@@ -88,7 +88,7 @@ wl_create() {
         return 1
     fi
 
-    uv venv "$ENV_PATH" $@
+    uv venv "$ENV_PATH" "$@"
 }
 
 ###
@@ -220,15 +220,15 @@ wl () {
             ;;
         activate)
             shift
-            wl_activate $@
+            wl_activate "$@"
             ;;
         create)
             shift
-            wl_create $@
+            wl_create "$@"
             ;;
         delete)
             shift
-            wl_delete $@
+            wl_delete "$@"
             ;;
         list)
             ls "$ENV_DIR"
@@ -238,7 +238,7 @@ wl () {
             ;;
         base)
             shift
-            wl_set_base $@
+            wl_set_base "$@"
             ;;
         init)
             wl_init
