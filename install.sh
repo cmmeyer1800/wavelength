@@ -5,9 +5,15 @@ SCRIPT_URL="https://github.com/cmmeyer1800/wavelength/releases/download/v$VERSIO
 
 # Try curl first, if not available try wget
 if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "$SCRIPT_URL" -o wl.sh
+    if ! curl -fsSL "$SCRIPT_URL" -o wl.sh; then
+        echo "Error: Failed to download wavelength install script."
+        exit 1
+    fi
 elif command -v wget >/dev/null 2>&1; then
-    wget -q "$SCRIPT_URL" -O wl.sh
+    if ! wget -q "$SCRIPT_URL" -O wl.sh; then
+        echo "Error: Failed to download wavelength install script."
+        exit 1
+    fi
 else
     echo "Error: Neither curl nor wget is installed. Please install one of these tools to proceed."
     exit 1
