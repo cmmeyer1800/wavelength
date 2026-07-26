@@ -233,6 +233,10 @@ wl () {
             wl_delete "$@"
             ;;
         list)
+            if [ ! -d "$ENV_DIR" ]; then
+                echo "No environments found. Run 'wl init' first."
+                return 1
+            fi
             ls "$ENV_DIR"
             ;;
         version)
