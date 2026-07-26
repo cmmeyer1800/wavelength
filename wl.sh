@@ -158,6 +158,21 @@ wl_set_base() {
 
 
 ###
+# Return 0 if the first semver-style version is greater than the second
+_wl_version_higher() {
+    awk -F. -v v1="$1" -v v2="$2" 'BEGIN {
+        n = split(v1, a, "."); m = split(v2, b, ".");
+        for (i = 1; i <= n || i <= m; i++) {
+            ai = (i <= n ? a[i] : 0);
+            bi = (i <= m ? b[i] : 0);
+            if (ai + 0 > bi + 0) { exit 0 }
+            if (ai + 0 < bi + 0) { exit 1 }
+        }
+        exit 1
+    }'
+}
+
+###
 # Check for and install updates from GitHub releases
 wl_update() {
     if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
@@ -189,14 +204,13 @@ wl_update() {
     LATEST_VERSION="${TAG_NAME#v}"
     CURRENT_VERSION="$VERSION"
 
-    # Version comparison using sort -V (supported on macOS and Linux)
-    HIGHER=$(printf '%s\n' "$CURRENT_VERSION" "$LATEST_VERSION" | sort -V | tail -n1)
-    if [ "$HIGHER" = "$CURRENT_VERSION" ] && [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-        echo "Current version ($CURRENT_VERSION) is newer than latest release ($LATEST_VERSION). No update needed."
-        return 0
-    fi
     if [ "$CURRENT_VERSION" = "$LATEST_VERSION" ]; then
         echo "Already up to date (v$CURRENT_VERSION)."
+        return 0
+    fi
+
+    if _wl_version_higher "$CURRENT_VERSION" "$LATEST_VERSION"; then
+        echo "Current version ($CURRENT_VERSION) is newer than latest release ($LATEST_VERSION). No update needed."
         return 0
     fi
 
