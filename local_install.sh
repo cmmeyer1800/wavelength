@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-    echo "Usage: install.sh PATH_TO_WL_SH"
+    echo "Usage: local_install.sh PATH_TO_WL_SH"
     exit 1
 fi
 
