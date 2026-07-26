@@ -1,24 +1,25 @@
 # Wavelength
 
-Super simple manager of global uv virtual environments
+A super simple manager for global uv virtual environments.
 
 ## Who?
 
-Do you want the speed and modernity of UV with the nice cli options and environment management of conda, wavelength is for you.
+Do you want the speed and modernity of UV with the nice CLI options and environment management of conda? Wavelength is for you.
 
 ## Installation
 
-UV must be installed:
+uv must be installed:
 
 https://docs.astral.sh/uv/getting-started/installation/
 
-### Easy install WIP
+### Easy install
 
 ```bash
-curl -LsSf https://github.com/cmmeyer1800/wavelength/releases/download/v0.2.0/install.sh | sh
+curl -LsSf https://github.com/cmmeyer1800/wavelength/releases/latest/download/install.sh | sh
 ```
 
-### GIT
+### From source
+
 ```bash
 git clone https://github.com/cmmeyer1800/wavelength
 cd wavelength
@@ -27,11 +28,12 @@ cd wavelength
 
 ## Post install
 
-After running the installer script do not forget to add sourcing the script to your .\<shell>rc file:
-```
+After running the installer script, do not forget to add the following to your `.<shell>rc` file:
+
+```bash
 source ~/.wavelength/wl.sh
 ```
 
 ## Updating
 
-WIP
+Run `wl update` to check for and install the latest release.
