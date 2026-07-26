@@ -66,7 +66,7 @@ wl_init() {
         echo "Wavelength environment directory already exists at $ENV_DIR"
     fi
 
-    touch $CONFIG_FILE
+    touch "$CONFIG_FILE"
     echo "Created blank config file at $CONFIG_FILE"
 }
 
@@ -74,6 +74,11 @@ wl_init() {
 ###
 # Wavelength create command, create a new uv python virtual environment
 wl_create() {
+    if ! command -v uv >/dev/null 2>&1; then
+        echo "Error: uv is required but not found on PATH. See https://docs.astral.sh/uv/getting-started/installation/"
+        return 1
+    fi
+
     if [ $# -le 0 ]; then
         echo "Usage: wl create ENV_NAME [--python=PYTHON_VERSION]"
         return 1
