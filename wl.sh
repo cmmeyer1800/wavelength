@@ -3,7 +3,7 @@
 BASE_DIR="${WL_BASE_DIR:-$HOME/.wavelength}"
 ENV_DIR="$BASE_DIR/environments"
 CONFIG_FILE="$BASE_DIR/config"
-VERSION="0.1.0"
+VERSION="0.2.0"
 
 
 if [ -f "$CONFIG_FILE" ]; then
