@@ -82,6 +82,13 @@ wl_create() {
     ENV_NAME="$1"
     shift
 
+    case "$ENV_NAME" in
+        ""|.|..|*/*|-*)
+            echo "Error: Invalid environment name '$ENV_NAME'. Names cannot be empty, '.', '..', contain '/', or start with '-'."
+            return 1
+            ;;
+    esac
+
     ENV_PATH="$ENV_DIR/$ENV_NAME"
 
     if [ -d "$ENV_PATH" ]; then
