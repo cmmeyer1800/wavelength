@@ -232,8 +232,19 @@ wl_update() {
     fi
 
     chmod +x "$TMP_FILE"
+
+    if ! grep -q '^VERSION=' "$TMP_FILE"; then
+        echo "Error: Downloaded update does not appear to be a valid wavelength script."
+        rm -f "$TMP_FILE"
+        return 1
+    fi
+
+    if [ -f "$BASE_DIR/wl.sh" ]; then
+        cp "$BASE_DIR/wl.sh" "$BASE_DIR/wl.sh.bak"
+    fi
+
     mv "$TMP_FILE" "$BASE_DIR/wl.sh"
-    echo "Successfully updated to v$LATEST_VERSION. Restart your shell or run 'source ~/.wavelength/wl.sh' to use the new version."
+    echo "Successfully updated to v$LATEST_VERSION. Restart your shell or run 'source $BASE_DIR/wl.sh' to use the new version."
 }
 
 wl () {
