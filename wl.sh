@@ -194,8 +194,8 @@ wl_update() {
         return 1
     fi
 
-    # Parse tag_name (e.g. "v0.2.0") - use sed for portability
-    TAG_NAME=$(echo "$RELEASE_JSON" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -n1)
+    # Parse tag_name (e.g. "v0.2.0") from the release JSON
+    TAG_NAME=$(printf '%s\n' "$RELEASE_JSON" | grep -o '"tag_name": *"[^"]*"' | head -n1 | cut -d'"' -f4)
     if [ -z "$TAG_NAME" ]; then
         echo "Error: Could not parse latest release version."
         return 1
