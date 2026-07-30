@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check shell script syntax
+        run: |
+          bash -n wl.sh
+          bash -n local_install.sh
+          sh -n install.sh
+
+      - name: Verify wl.sh sources cleanly
+        run: |
+          bash -c 'source wl.sh; type wl >/dev/null'
